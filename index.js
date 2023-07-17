@@ -31,9 +31,14 @@ await api.initSession();
 // const generateID = () => Math.random().toString(36).substring(2, 10);
 
 async function chatResponse(quest) {
-	return await api.sendMessage(
-		quest
-	);
+
+	try {
+		const { response } = await api.sendMessage(quest);
+		return { answer: response }
+	} catch (e) {
+		return { error: e }
+	}
+
 }
 
 app.post("/api/quest", (req, res) => {
@@ -60,9 +65,7 @@ app.post("/api/quest", (req, res) => {
 
 		let response = await chatResponse(quest);
 
-		return res.json({
-			answer: response.response,
-		});
+		return res.json(response);
 
 		// result.brandImage = websiteOgImage;
 		// result.id = generateID();
